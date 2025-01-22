@@ -25,3 +25,5 @@ docker-compose up --build
 ```
 
 Access the application at `http://localhost` 
+
+Access the API docs at `http://localhost:8000/docs` 
