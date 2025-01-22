@@ -1,0 +1,113 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+:root {
+  /* Primary colors */
+  --mat-primary-color: #1976d2;
+  --mat-primary-darker: #1565c0;
+  --mat-primary-lighter: #42a5f5;
+  --mat-primary-contrast: #ffffff;
+
+  /* Accent colors */
+  --mat-accent-color: #009688;
+  --mat-accent-darker: #00796b;
+  --mat-accent-lighter: #4db6ac;
+  --mat-accent-contrast: #ffffff;
+
+  /* Warn colors */
+  --mat-warn-color: #f44336;
+  --mat-warn-darker: #d32f2f;
+  --mat-warn-lighter: #ef5350;
+  --mat-warn-contrast: #ffffff;
+
+  /* Background colors */
+  --mat-background-color: #fafafa;
+  --mat-background-darker: #f5f5f5;
+  --mat-background-lighter: #ffffff;
+
+  /* Text colors */
+  --mat-text-primary: rgba(0, 0, 0, 0.87);
+  --mat-text-secondary: rgba(0, 0, 0, 0.54);
+  --mat-text-disabled: rgba(0, 0, 0, 0.38);
+}
+
+/* Global styles */
+html, body { 
+  height: 100%;
+  margin: 0;
+}
+
+body { 
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--mat-background-color);
+  color: var(--mat-text-primary);
+}
+
+/* Material component styles */
+.mdc-button {
+  &.mat-primary {
+    --mdc-filled-button-container-color: var(--mat-primary-color);
+    --mdc-filled-button-label-text-color: var(--mat-primary-contrast);
+  }
+
+  &.mat-accent {
+    --mdc-filled-button-container-color: var(--mat-accent-color);
+    --mdc-filled-button-label-text-color: var(--mat-accent-contrast);
+  }
+}
+
+.mdc-text-field {
+  --mdc-filled-text-field-container-color: var(--mat-background-lighter);
+  --mdc-filled-text-field-label-text-color: var(--mat-text-secondary);
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: var(--mat-warn-color);
+  --mdc-snackbar-supporting-text-color: var(--mat-warn-contrast);
+}
+
+/* Material typography */
+.mat-typography {
+  font: 400 14px/20px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: normal;
+}
+
+.mat-h1, .mat-headline-1 {
+  font: 400 24px/32px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0 0 16px;
+}
+
+.mat-h2, .mat-headline-2 {
+  font: 400 20px/32px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0 0 16px;
+}
+
+/* Material Web Components default styles */
+md-filled-button,
+md-outlined-button,
+md-text-button {
+  --md-sys-typescale-label-large-font: inherit;
+}
+
+md-filled-field,
+md-outlined-field {
+  --md-sys-typescale-body-large-font: inherit;
+}
+
+.success-snackbar {
+  background: #4caf50 !important;
+  color: white !important;
+
+  .mat-simple-snackbar-action {
+    color: white !important;
+  }
+}
+
+.error-snackbar {
+  background: #f44336 !important;
+  color: white !important;
+
+  .mat-simple-snackbar-action {
+    color: white !important;
+  }
+}

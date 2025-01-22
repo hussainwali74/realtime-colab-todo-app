@@ -1,0 +1,71 @@
+<div class="todo-container">
+
+  <h1>Todo List</h1>
+  
+  <app-todo-form (createTodo)="onCreateTodo($event)"></app-todo-form>
+
+  @if (loading) {
+    <div class="loading-spinner">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+  } @else if (todos().length) {
+    <div class="header-section">
+      <div class="online-users">
+        <span class="dot"></span>
+        <span class="count">{{ onlineUsers }} Online</span>
+      </div>
+      <div class="filters">
+        <mat-form-field class="search-field" appearance="outline">
+          <mat-label>Search todos</mat-label>
+          <input matInput 
+                 [(ngModel)]="searchTerm" 
+                 (ngModelChange)="onSearch($event)"
+                 placeholder="Search by title or description">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        
+        <mat-form-field class="status-filter" appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select [(ngModel)]="statusFilter" (selectionChange)="filterTodos()">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="active">Active</mat-option>
+            <mat-option value="completed">Completed</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  
+    <div class="todo-table">
+      @for (todo of todos(); track todo.id) {
+        <div class="todo-row" [class.completed]="todo.completed">
+          <div class="todo-cell checkbox-cell">
+            <mat-checkbox
+              [checked]="todo.completed"
+              (change)="onStatusChange(todo)"
+              color="primary"
+              class="todo-checkbox">
+            </mat-checkbox>
+          </div>
+          <div class="todo-cell title-cell">
+            <div class="todo-title">{{ todo.title }}</div>
+            <div class="todo-description">{{ todo.description }}</div>
+          </div>
+          <div class="todo-cell action-cell">
+            <button mat-icon-button color="primary" (click)="onEdit(todo)">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+          <div class="todo-cell action-cell">
+            <button mat-icon-button color="warn" (click)="onDeleteTodo(todo)">
+              <mat-icon>delete</mat-icon> 
+              <!-- {{todo._id}} -->
+              <!-- {{todo |json}} -->
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="no-todos">No todos yet. Create one above!</p>
+  }
+</div> 

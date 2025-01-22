@@ -1,0 +1,31 @@
+<form [formGroup]="todoForm" (ngSubmit)="onSubmit()" class="todo-form">
+  <div>
+    <label>Task Title</label>
+    <mat-form-field appearance="outline">
+      <input matInput formControlName="title" placeholder="Enter task title">
+      <mat-error *ngIf="todoForm.get('title')?.errors?.['required']">
+        Title is required
+      </mat-error>
+      <mat-error *ngIf="todoForm.get('title')?.errors?.['minlength']">
+        Title must be at least 3 characters
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <label>Description</label>
+    <mat-form-field appearance="outline">
+      <textarea matInput formControlName="description" placeholder="Enter task description" rows="4"></textarea>
+      <mat-error *ngIf="todoForm.get('description')?.errors?.['required']">
+        Description is required
+      </mat-error>
+      <mat-error *ngIf="todoForm.get('description')?.errors?.['minlength']">
+        Description must be at least 5 characters
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <button mat-raised-button type="submit" [disabled]="todoForm.invalid">
+    + Create Task
+  </button>
+</form> 
