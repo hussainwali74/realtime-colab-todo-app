@@ -4,36 +4,36 @@
   
   <app-todo-form (createTodo)="onCreateTodo($event)"></app-todo-form>
 
+  <div class="header-section">
+    <div class="online-users">
+      <span class="dot"></span>
+      <span class="count">{{ onlineUsers }} Online</span>
+    </div>
+    <div class="filters">
+      <mat-form-field class="search-field" appearance="outline">
+        <mat-label>Search todos</mat-label>
+        <input matInput 
+               [(ngModel)]="searchTerm" 
+               (ngModelChange)="onSearch($event)"
+               placeholder="Search by title or description">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      
+      <mat-form-field class="status-filter" appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="statusFilter" (selectionChange)="filterTodos()">
+          <mat-option value="all">All</mat-option>
+          <mat-option value="active">Active</mat-option>
+          <mat-option value="completed">Completed</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
   @if (loading) {
     <div class="loading-spinner">
       <mat-spinner diameter="50"></mat-spinner>
     </div>
   } @else if (todos().length) {
-    <div class="header-section">
-      <div class="online-users">
-        <span class="dot"></span>
-        <span class="count">{{ onlineUsers }} Online</span>
-      </div>
-      <div class="filters">
-        <mat-form-field class="search-field" appearance="outline">
-          <mat-label>Search todos</mat-label>
-          <input matInput 
-                 [(ngModel)]="searchTerm" 
-                 (ngModelChange)="onSearch($event)"
-                 placeholder="Search by title or description">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-        
-        <mat-form-field class="status-filter" appearance="outline">
-          <mat-label>Status</mat-label>
-          <mat-select [(ngModel)]="statusFilter" (selectionChange)="filterTodos()">
-            <mat-option value="all">All</mat-option>
-            <mat-option value="active">Active</mat-option>
-            <mat-option value="completed">Completed</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </div>
   
     <div class="todo-table">
       @for (todo of todos(); track todo.id) {

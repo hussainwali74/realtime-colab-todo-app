@@ -1,0 +1,10 @@
+/*/node_modules
+/*/pycache
+
+/dist
+/tmp
+/out-tsc
+/bazel-out
+/*/.venv
+/*/.vscode
+mongodb_data

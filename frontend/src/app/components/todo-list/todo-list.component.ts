@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { TodoFormComponent } from '../todo-form/todo-form.component';
 import { TodoService } from '../../services/todo.service';
 import { WebSocketService } from '../../services/websocket.service';
-import { Todo, TodoCreateDTO, TodoUpdateDTO } from '../../models/todo.interface';
+import {
+  Todo,
+  TodoCreateDTO,
+  TodoUpdateDTO,
+} from '../../models/todo.interface';
 import { SocketEvent } from '../../models/socket.interface';
 import { Subject, takeUntil } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -14,10 +18,10 @@ import { ErrorService } from '../../services/error.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TodoEditDialogComponent } from '../todo-edit-dialog/todo-edit-dialog.component';
-import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-todo-list',
@@ -35,10 +39,10 @@ import { MatSelectModule } from '@angular/material/select';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
   ],
   templateUrl: './todo-list.component.html',
-  styleUrls: ['./todo-list.component.scss']
+  styleUrls: ['./todo-list.component.scss'],
 })
 export class TodoListComponent implements OnInit, OnDestroy {
   todos = signal<Todo[]>([]);
@@ -68,7 +72,8 @@ export class TodoListComponent implements OnInit, OnDestroy {
   }
 
   private loadTodos(): void {
-    this.todoService.getTodos()
+    this.todoService
+      .getTodos()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -84,13 +89,15 @@ export class TodoListComponent implements OnInit, OnDestroy {
           console.error('Error loading todos:', error);
           this.loading = false;
           this.errorService.handleError('Failed to load todos');
-        }
+        },
       });
   }
 
   private sortTodos(todos: Todo[]): Todo[] {
     return todos.sort((a, b) => {
-      return new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime();
+      return (
+        new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime()
+      );
     });
   }
 
@@ -98,17 +105,19 @@ export class TodoListComponent implements OnInit, OnDestroy {
     console.log('Setting up WebSocket connections...');
     this.wsService.connect();
 
-    this.wsService.onUserCount()
+    this.wsService
+      .onUserCount()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(count => {
+      .subscribe((count) => {
         this.onlineUsers = count;
       });
 
     // Listen for todo created events
     console.log('Subscribing to todo created events...');
-    this.wsService.onTodoEvent(SocketEvent.TODO_CREATED)
+    this.wsService
+      .onTodoEvent(SocketEvent.TODO_CREATED)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(event => {
+      .subscribe((event) => {
         if (event.data) {
           this.allTodos = [...this.allTodos, event.data];
           this.filterTodos();
@@ -118,11 +127,12 @@ export class TodoListComponent implements OnInit, OnDestroy {
 
     // Listen for todo updated events
     console.log('Subscribing to todo updated events...');
-    this.wsService.onTodoEvent(SocketEvent.TODO_UPDATED)
+    this.wsService
+      .onTodoEvent(SocketEvent.TODO_UPDATED)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(event => {
+      .subscribe((event) => {
         if (event.data) {
-          this.allTodos = this.allTodos.map(todo => 
+          this.allTodos = this.allTodos.map((todo) =>
             todo._id === event.data!._id ? event.data! : todo
           );
           this.filterTodos();
@@ -132,12 +142,13 @@ export class TodoListComponent implements OnInit, OnDestroy {
 
     // Listen for todo deleted events
     console.log('Subscribing to todo deleted events...');
-    this.wsService.onTodoEvent(SocketEvent.TODO_DELETED)
+    this.wsService
+      .onTodoEvent(SocketEvent.TODO_DELETED)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(event => {
+      .subscribe((event) => {
         if (event.data?._id) {
-          this.allTodos = this.allTodos.filter(todo => 
-            todo._id !== event.data!._id
+          this.allTodos = this.allTodos.filter(
+            (todo) => todo._id !== event.data!._id
           );
           this.filterTodos();
           this.todos.set(this.sortTodos(this.allTodos));
@@ -146,7 +157,8 @@ export class TodoListComponent implements OnInit, OnDestroy {
   }
 
   onCreateTodo(todoData: TodoCreateDTO): void {
-    this.todoService.createTodo(todoData)
+    this.todoService
+      .createTodo(todoData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -154,20 +166,20 @@ export class TodoListComponent implements OnInit, OnDestroy {
           if (response && response.data) {
             // this.todos.update(todos => [...todos, response.data]);
             // this.todos.set(this.sortTodos([...this.todos(), response.data]));
-            
-            console.log('dataaaaaaaaa', this.todos());
+
             this.errorService.showSuccess('Todo created successfully');
           }
         },
         error: (error) => {
           console.error('Error creating todo:', error);
           this.errorService.handleError('Failed to create todo');
-        }
+        },
       });
   }
 
   onUpdateTodo(todoData: TodoUpdateDTO): void {
-    this.todoService.updateTodo(todoData)
+    this.todoService
+      .updateTodo(todoData)
       .pipe(takeUntil(this.destroy$))
       .subscribe();
   }
@@ -179,38 +191,40 @@ export class TodoListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.todoService.deleteTodo(todoId)
+    this.todoService
+      .deleteTodo(todoId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           console.log('Delete todo response:', response);
           // Local state update will happen through WebSocket event
           this.errorService.showSuccess('Todo deleted successfully');
-
         },
         error: (error) => {
           console.error('Error deleting todo:', error);
           this.errorService.handleError('Failed to delete todo');
-        }
+        },
       });
   }
 
   onEdit(todo: Todo): void {
     const dialogRef = this.dialog.open(TodoEditDialogComponent, {
-      data: { ...todo }
+      data: { ...todo },
     });
 
-    dialogRef.afterClosed()
+    dialogRef
+      .afterClosed()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(result => {
+      .subscribe((result) => {
         if (result) {
           const updateData: TodoUpdateDTO = {
             id: todo._id!,
             title: result.title,
-            description: result.description
+            description: result.description,
           };
-          
-          this.todoService.updateTodo(updateData)
+
+          this.todoService
+            .updateTodo(updateData)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: (updatedTodo) => {
@@ -220,32 +234,30 @@ export class TodoListComponent implements OnInit, OnDestroy {
               error: (error) => {
                 console.error('Error editing todo:', error);
                 this.errorService.handleError('Failed to edit todo');
-              }
+              },
             });
         }
       });
   }
 
   onStatusChange(todo: Todo): void {
-    
     const updateData: TodoUpdateDTO = {
       id: todo._id!,
-      completed: !todo.completed  // Toggle the status
+      completed: !todo.completed, // Toggle the status
     };
-    
+
     console.log('Status change for todo:', todo);
-    console.log('updateData', updateData)
-    // return 
-    this.todoService.updateTodo(updateData)
+    console.log('updateData', updateData);
+    // return
+    this.todoService
+      .updateTodo(updateData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updatedTodo) => {
           console.log('Todo status updated:', updatedTodo);
           // Update the local state
-          this.todos.update(todos => 
-            todos.map(t => 
-              t._id === updatedTodo._id ? updatedTodo : t
-            )
+          this.todos.update((todos) =>
+            todos.map((t) => (t._id === updatedTodo._id ? updatedTodo : t))
           );
           this.errorService.showSuccess('Todo status updated successfully');
         },
@@ -254,7 +266,7 @@ export class TodoListComponent implements OnInit, OnDestroy {
           this.errorService.handleError('Failed to update todo status');
           // Revert the checkbox state in case of error
           todo.completed = !todo.completed;
-        }
+        },
       });
   }
 
@@ -268,19 +280,20 @@ export class TodoListComponent implements OnInit, OnDestroy {
     // Apply search filter
     if (this.searchTerm.trim()) {
       const searchTerm = this.searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(todo => 
-        todo.title.toLowerCase().includes(searchTerm) || 
-        todo.description.toLowerCase().includes(searchTerm)
+      filtered = filtered.filter(
+        (todo) =>
+          todo.title.toLowerCase().includes(searchTerm) ||
+          todo.description.toLowerCase().includes(searchTerm)
       );
     }
 
     // Apply status filter
     if (this.statusFilter !== 'all') {
-      filtered = filtered.filter(todo => 
+      filtered = filtered.filter((todo) =>
         this.statusFilter === 'completed' ? todo.completed : !todo.completed
       );
     }
 
     this.todos.set(filtered);
   }
-} 
+}

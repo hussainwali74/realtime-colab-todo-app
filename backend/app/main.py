@@ -21,7 +21,7 @@ fastapi_app = FastAPI(title="Todo App API", version="1.0.0", lifespan=lifespan)
 # Add CORS middleware
 fastapi_app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost", "http://localhost:80", "*"],
+    allow_origins=["http://localhost", "http://localhost:4200", "http://localhost:80", ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

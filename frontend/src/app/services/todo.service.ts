@@ -10,7 +10,8 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class TodoService {
-  private apiUrl = '/todos';  // Simplified URL
+  private apiUrl = environment.apiUrl+'/todos';
+  // private apiUrl = '/todos';  // Simplified URL
 
   constructor(
     private http: HttpClient,

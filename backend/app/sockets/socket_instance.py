@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 # Create Socket.IO server with CORS configuration
 sio = socketio.AsyncServer(
     async_mode='asgi',
-    cors_allowed_origins=["http://localhost", "http://localhost:80"],  # Explicitly allow localhost
+    cors_allowed_origins=["http://localhost", "http://localhost:4200", "http://localhost:80"],  
     logger=True,
     engineio_logger=True,
     ping_timeout=60,
