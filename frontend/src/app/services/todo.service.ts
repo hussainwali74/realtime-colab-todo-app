@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, tap } from 'rxjs';
+import { Observable, catchError, tap, map } from 'rxjs';
 import { Todo, TodoCreateDTO, TodoUpdateDTO, TodoResponse, TodosResponse } from '../models/todo.interface';
 // import { environment } from '../../environments/environment';
 import { ErrorService } from './error.service';
@@ -10,18 +10,20 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class TodoService {
-  private apiUrl = `${environment.apiUrl}/todos`;
+  private apiUrl = '/todos';  // Simplified URL
 
   constructor(
     private http: HttpClient,
     private errorService: ErrorService
   ) {}
 
-  getTodos(): Observable<TodosResponse> {
-    return this.http.get<TodosResponse>(this.apiUrl)
+  getTodos(): Observable<Todo[]> {
+    return this.http.get<Todo[]>(this.apiUrl)
       .pipe(
+        tap(response => console.log('Raw todos response:', response)),
         catchError(error => {
-          this.errorService.handleError(error);
+          console.error('Error fetching todos:', error);
+          this.errorService.handleError('Failed to load todos');
           throw error;
         })
       );

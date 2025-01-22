@@ -16,12 +16,15 @@ export class WebSocketService {
     console.log('WebSocketService constructor - URL:', environment.wsUrl);
     
     this.socket = io(environment.wsUrl, {
-      transports: ['websocket'],
+      transports: ['polling', 'websocket'],  // Start with polling, upgrade to websocket
       autoConnect: false,
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
-      withCredentials: true
+      path: '/socket.io/',
+      withCredentials: true,
+      forceNew: true,
+      timeout: 60000
     });
 
     console.log('WebSocketService socket instance:', this.socket);

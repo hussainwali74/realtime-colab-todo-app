@@ -1,22 +1,37 @@
 import socketio
+import logging
 
+logger = logging.getLogger(__name__)
+
+# Create Socket.IO server with CORS configuration
 sio = socketio.AsyncServer(
     async_mode='asgi',
-    cors_allowed_origins=['http://localhost:4200','*'],
+    cors_allowed_origins=["http://localhost", "http://localhost:80"],  # Explicitly allow localhost
     logger=True,
-    engineio_logger=True
+    engineio_logger=True,
+    ping_timeout=60,
+    ping_interval=25,
+    max_http_buffer_size=1e8,
+    allow_upgrades=True
 )
 
 connected_clients = set()
 
-@sio.on('connect')
-async def handle_connect(sid, environ):
+# Remove the @sio.on_error() decorator and use error_handler event instead
+@sio.on('error')
+async def error_handler(sid, error):
+    logger.error(f"SocketIO error for {sid}: {str(error)}")
+
+@sio.event
+async def connect(sid, environ):
+    logger.info(f"Client connected: {sid}")
     connected_clients.add(sid)
     count = len(connected_clients)
     await sio.emit('user_count', count)
 
-@sio.on('disconnect')
-async def handle_disconnect(sid):
+@sio.event
+async def disconnect(sid):
+    logger.info(f"Client disconnected: {sid}")
     if sid in connected_clients:
         connected_clients.remove(sid)
         count = len(connected_clients)

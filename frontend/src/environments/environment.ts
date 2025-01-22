@@ -8,6 +8,7 @@ interface Environment {
 //   wsUrl: import.meta.env.VITE_WS_URL
 // }; 
 export const environment = {
-    apiUrl: 'http://localhost:8000',
-    wsUrl: 'http://localhost:8000'  // Socket.IO will handle the path
+  production: false,
+  apiUrl: '',  // Remove /api prefix
+  wsUrl: window.location.origin  // This will be http://localhost in development
 }; 
