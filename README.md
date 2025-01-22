@@ -18,7 +18,7 @@ A real-time collaborative todo application built with FastAPI (Backend) and Angu
 ## Quick Start
 ```bash
 # Clone the repository
-git clone [repository-url]
+git clone https://github.com/hussainwali74/realtime-colab-todo-app
 
 # Start the application using Docker
 docker-compose up --build
