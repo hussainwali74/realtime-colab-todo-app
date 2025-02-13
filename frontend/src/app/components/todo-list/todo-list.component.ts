@@ -35,7 +35,6 @@ import { FormsModule } from '@angular/forms';
     MatButtonModule,
     MatSnackBarModule,
     MatDialogModule,
-    TodoEditDialogComponent,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -45,12 +44,13 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./todo-list.component.scss'],
 })
 export class TodoListComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+  private allTodos: Todo[] = [];
+
   todos = signal<Todo[]>([]);
   loading = true;
   onlineUsers: number = 0;
-  private destroy$ = new Subject<void>();
   searchTerm: string = '';
-  private allTodos: Todo[] = [];
   statusFilter: 'all' | 'active' | 'completed' = 'all';
 
   constructor(
@@ -72,6 +72,7 @@ export class TodoListComponent implements OnInit, OnDestroy {
   }
 
   private loadTodos(): void {
+    this.loading = true;
     this.todoService
       .getTodos()
       .pipe(takeUntil(this.destroy$))
@@ -109,6 +110,7 @@ export class TodoListComponent implements OnInit, OnDestroy {
       .onUserCount()
       .pipe(takeUntil(this.destroy$))
       .subscribe((count) => {
+        console.log('---------------> User count:', count);
         this.onlineUsers = count;
       });
 
@@ -270,7 +272,7 @@ export class TodoListComponent implements OnInit, OnDestroy {
       });
   }
 
-  onSearch(term: string): void {
+  onSearch(): void {
     this.filterTodos();
   }
 

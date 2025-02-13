@@ -6,7 +6,6 @@ export interface Todo {
   completed: boolean;
   created_at?: Date;
   updated_at?: Date;
-  version?: number; // For handling concurrent updates
 }
 
 export interface TodoCreateDTO {
@@ -19,7 +18,6 @@ export interface TodoUpdateDTO {
   title?: string;
   description?: string;
   completed?: boolean;
-  version?: number;
 }
 
 export interface ApiResponse<T> {
@@ -29,4 +27,4 @@ export interface ApiResponse<T> {
 }
 
 export interface TodosResponse extends ApiResponse<Todo[]> {}
-export interface TodoResponse extends ApiResponse<Todo> {} 
+export interface TodoResponse extends ApiResponse<Todo> {}

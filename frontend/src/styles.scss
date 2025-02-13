@@ -1,6 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
 
+
+// Customize the entire app. Change :root to your selector if you want to scope the styles.
+:root {
+  @include mat.progress-spinner-overrides((
+    active-indicator-color: #22c55e,
+  ));
+}
 :root {
   /* Primary colors */
   --mat-primary-color: #1976d2;

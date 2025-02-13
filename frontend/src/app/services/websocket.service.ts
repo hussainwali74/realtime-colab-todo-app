@@ -2,11 +2,16 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../../environments/environment';
-import { SocketEvent, SocketMessage, TodoSocketEvent, SocketError } from '../models/socket.interface';
+import {
+  SocketEvent,
+  SocketMessage,
+  TodoSocketEvent,
+  SocketError,
+} from '../models/socket.interface';
 import { ErrorService } from './error.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WebSocketService {
   private socket: Socket;
@@ -14,9 +19,9 @@ export class WebSocketService {
 
   constructor(private errorService: ErrorService) {
     console.log('WebSocketService constructor - URL:', environment.wsUrl);
-    
+
     this.socket = io(environment.wsUrl, {
-      transports: ['polling', 'websocket'],  // Start with polling, upgrade to websocket
+      transports: ['polling', 'websocket'], // Start with polling, upgrade to websocket
       autoConnect: false,
       reconnection: true,
       reconnectionAttempts: 5,
@@ -24,7 +29,7 @@ export class WebSocketService {
       path: '/socket.io/',
       withCredentials: true,
       forceNew: true,
-      timeout: 60000
+      timeout: 60000,
     });
 
     console.log('WebSocketService socket instance:', this.socket);
@@ -44,12 +49,16 @@ export class WebSocketService {
     this.socket.on('disconnect', (reason) => {
       console.log('Socket disconnected:', reason);
       this.connected$.next(false);
-      this.errorService.handleError('Connection to server lost. Attempting to reconnect...');
+      this.errorService.handleError(
+        'Connection to server lost. Attempting to reconnect...'
+      );
     });
 
     this.socket.on('connect_error', (error) => {
       console.error('WebSocket connection error:', error);
-      this.errorService.handleError('Failed to connect to server. Please check your connection.');
+      this.errorService.handleError(
+        'Failed to connect to server. Please check your connection.'
+      );
     });
 
     this.socket.onAny((event, ...args) => {
@@ -75,7 +84,7 @@ export class WebSocketService {
 
   onTodoEvent(event: SocketEvent): Observable<TodoSocketEvent> {
     console.log(`Setting up listener for event: ${event}`);
-    return new Observable(observer => {
+    return new Observable((observer) => {
       this.socket.on(event, (data: TodoSocketEvent) => {
         console.log(`Received ${event} event:`, data);
         try {
@@ -112,7 +121,7 @@ export class WebSocketService {
   }
 
   onUserCount(): Observable<number> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       this.socket.on('user_count', (count: number) => {
         console.log('Raw user count received:', count);
         observer.next(count);
@@ -123,4 +132,4 @@ export class WebSocketService {
       };
     });
   }
-} 
+}

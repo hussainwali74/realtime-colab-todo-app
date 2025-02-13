@@ -14,7 +14,7 @@
         <mat-label>Search todos</mat-label>
         <input matInput 
                [(ngModel)]="searchTerm" 
-               (ngModelChange)="onSearch($event)"
+               (ngModelChange)="onSearch()"
                placeholder="Search by title or description">
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
@@ -34,7 +34,7 @@
       <mat-spinner diameter="50"></mat-spinner>
     </div>
   } @else if (todos().length) {
-  
+    
     <div class="todo-table">
       @for (todo of todos(); track todo.id) {
         <div class="todo-row" [class.completed]="todo.completed">

@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from typing import List
 from ..models.todo import TodoModel, TodoResponse
 from ..services.todo_service import TodoService
-from ..sockets.todo_socket import socket_manager
+from ..sockets.socket_instance import socket_server
 import logging
 import sys
 
@@ -24,7 +24,7 @@ async def create_todo(todo: TodoModel, todo_service: TodoService = Depends(get_t
         # Add logging to debug broadcast
         logger.info(f"Broadcasting new todo: {created_todo}")
         # Broadcast the creation
-        await socket_manager.broadcast_todo_update(created_todo, "create")
+        await socket_server.broadcast_todo_update(created_todo, "create")
         return TodoResponse(data=created_todo)
         
     except Exception as e:
@@ -77,7 +77,7 @@ async def update_todo(todo_id: str, todo_update: dict, todo_service: TodoService
                 detail=f"Todo with ID {todo_id} not found"
             )
         # Broadcast the update
-        await socket_manager.broadcast_todo_update(updated_todo, "update")
+        await socket_server.broadcast_todo_update(updated_todo, "update")
         return updated_todo
     except Exception as e:
         logger.error(f"Error updating todo: {str(e)}")
@@ -99,8 +99,10 @@ async def delete_todo(todo_id: str, todo_service: TodoService = Depends(get_todo
         deleted = await todo_service.delete_todo(todo_id)
         if deleted:
             # Broadcast the deletion
-            await socket_manager.broadcast_todo_update(todo, "delete")
+            await socket_server.broadcast_todo_update(todo, "delete")
     except Exception as e:
+        print(f"Error deleting todo: {str(e)}")
+        logger.error(f"Error deleting todo: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e)
